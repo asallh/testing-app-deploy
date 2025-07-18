@@ -26,7 +26,7 @@ if st.button("✨ Launch Magic!"):
         time.sleep(0.01)
         progress_bar.progress(i)
     
-    st.balloons()
+    st.snow()
     st.markdown("### 🎯 You're all set! Let's build something amazing.")
 
 # Footer
