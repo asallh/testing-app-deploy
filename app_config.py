@@ -35,29 +35,34 @@ class Constants:
                 raise MissingEnvironmentVariables(f"Environment variable '{key}' not found")
             return value
 
+
     @classmethod
     def get_database_credentials(cls):
         env = cls.get_env()
+
         if env == "LOCAL":
+            import streamlit as st
+            secrets = st.secrets[env]
             return {
-                "host": cls.get_secrets("HOST"),
-                "dbname": cls.get_secrets("DBNAME"),
-                "user": cls.get_secrets("USER"),
-                "password": cls.get_secrets("TOKEN")
+                "host": secrets["HOST"],
+                "dbname": secrets["DBNAME"],
+                "user": secrets["USER"],
+                "password": secrets["TOKEN"]
             }
-        else:
-            conn_str = os.environ.get("database")
-            if not conn_str:
-                raise MissingEnvironmentVariables("Environment variable 'database' not found (set via resource key)")
-            import urllib.parse
-            parsed = urllib.parse.urlparse(conn_str)
-            return {
-                "host": parsed.hostname,
-                "dbname": parsed.path[1:],
-                "user": parsed.username,
-                "password": parsed.password,
-                "port": parsed.port or 5432
-            }
+
+        # In production, get the connection string from the "database" env var
+        conn_str = os.getenv("database")
+        if not conn_str or conn_str == "database":
+            raise EnvironmentError("Environment variable 'database' is not set or misconfigured")
+
+        parsed = urllib.parse.urlparse(conn_str)
+        return {
+            "host": parsed.hostname,
+            "dbname": parsed.path.lstrip("/"),
+            "user": parsed.username,
+            "password": parsed.password,
+            "port": parsed.port or 5432
+        }
 
     @classmethod
     def get_database_connection(cls):

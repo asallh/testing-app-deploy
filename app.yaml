@@ -1,6 +1,4 @@
 command: ['streamlit', 'run', 'app.py']
 env:
-  - name: ENV
-    value: ${ENV}
-  - name: database
-    value: ${RESOURCE_KEY}
+  - name: "database"
+    value: "database"
