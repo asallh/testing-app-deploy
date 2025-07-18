@@ -45,7 +45,7 @@ jobs:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
           ENV: DEV
-          RESOURCE_KEY: ${{ secrets.RESOURCE_KEY }}
+          database: ${{ secrets.RESOURCE_KEY }}  # 👈 inject the resource key here
         run: |
           databricks sync . /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy-dev
           databricks apps deploy test-deploy-dev \
@@ -57,7 +57,7 @@ jobs:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
           ENV: PROD
-          RESOURCE_KEY: ${{ secrets.RESOURCE_KEY }}
+          database: ${{ secrets.RESOURCE_KEY }}  # 👈 inject the resource key here
         run: |
           databricks sync . /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy
           databricks apps deploy test-app \

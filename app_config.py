@@ -1,6 +1,7 @@
 import streamlit as st
 import os
 import psycopg2
+import urllib
 
 class MissingEnvironmentVariables(EnvironmentError):
     def __init__(self, env_var_name):
@@ -28,7 +29,6 @@ class Constants:
 
     @classmethod
     def get_database_credentials(cls):
-        # Use secrets.toml for LOCAL, environment variable for DEV/PROD (Databricks)
         if cls.ENV == "LOCAL":
             return {
                 "host": cls.get_secrets("HOST"),
@@ -40,12 +40,19 @@ class Constants:
             conn_str = os.environ.get("database")
             if not conn_str:
                 raise MissingEnvironmentVariables("Environment variable 'database' not found (set via resource key)")
-            return {"connection_string": conn_str}
+            
+            # Parse connection string if needed
+            parsed = urllib.parse.urlparse(conn_str)
+            return {
+                "host": parsed.hostname,
+                "dbname": parsed.path[1:],  # strip leading /
+                "user": parsed.username,
+                "password": parsed.password,
+                "port": parsed.port or 5432
+            }
+
 
     @classmethod
     def get_database_connection(cls):
         creds = cls.get_database_credentials()
-        if cls.ENV == "LOCAL":
-            return psycopg2.connect(**creds)
-        else:
-            return psycopg2.connect(creds["connection_string"])
+        return psycopg2.connect(**creds)
