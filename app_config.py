@@ -48,7 +48,7 @@ class Constants:
                 "password": cls.get_secrets("TOKEN")
             }
         else:
-            conn_str = os.environ.get("database")
+            conn_str = os.environ["database"]
             if conn_str is None:
                 raise MissingEnvironmentVariables("Environment variable 'database' not found (set via resource key)")
             return {"connection_string": conn_str}
