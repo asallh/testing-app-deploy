@@ -49,9 +49,7 @@ jobs:
         run: |
           databricks sync . /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy-dev
           databricks apps deploy test-deploy-dev \
-            --source-code-path /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy-dev \
-            --env ENV=$ENV \
-            --env database=$RESOURCE_KEY
+            --source-code-path /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy-dev
 
       - name: Update Deployment (Main)
         if: github.ref == 'refs/heads/main'
@@ -63,6 +61,4 @@ jobs:
         run: |
           databricks sync . /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy
           databricks apps deploy test-app \
-            --source-code-path /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy \
-            --env ENV=$ENV \
-            --env database=$RESOURCE_KEY
+            --source-code-path /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy
