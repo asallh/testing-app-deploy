@@ -24,7 +24,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Install Databricks CLI
-        run: pip install databricks-cli
+        run: curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
 
       - name: Configure Databricks CLI
         run: |
