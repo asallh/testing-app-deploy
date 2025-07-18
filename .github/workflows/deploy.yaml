@@ -27,14 +27,14 @@ jobs:
         run: pip install databricks-cli
 
       - name: Configure Databricks CLI
+        run: |
+          mkdir -p ~/.databricks
+          echo "[DEFAULT]" > ~/.databricks/config
+          echo "host = $DATABRICKS_HOST" >> ~/.databricks/config
+          echo "token = $DATABRICKS_TOKEN" >> ~/.databricks/config
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-        run: |
-          databricks configure --token <<EOF
-          $DATABRICKS_HOST
-          $DATABRICKS_TOKEN
-          EOF
 
       - name: Watch and Sync to Databricks Apps
         run: |
