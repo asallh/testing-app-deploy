@@ -39,6 +39,15 @@ jobs:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
 
+      - name: Print environment variables
+        run: |
+          echo "ENV: $ENV"
+          echo "DATABASE: ${{ secrets.RESOURCE_KEY }}"
+          echo "DATABASE (via env): $database"
+        env:
+          ENV: ${{ env.ENV }}
+          database: ${{ secrets.RESOURCE_KEY }}
+
       - name: Update Deployment (Dev)
         if: github.ref == 'refs/heads/dev'
         env:
