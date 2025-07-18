@@ -43,4 +43,4 @@ jobs:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
-            databricks apps deploy test-app --source-code-path /Workspace/Users/ajaypalsallh@gmail.com/test-app
+            databricks apps deploy test-app --source-code-path /Workspace/Users/ajaypalsallh@gmail.com/test-app-deploy
