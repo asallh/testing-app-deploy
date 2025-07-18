@@ -52,6 +52,8 @@ jobs:
           echo "[DEV]" >> .streamlit/secrets.toml
           echo "database = \"${RESOURCE_KEY}\"" >> .streamlit/secrets.toml
           cat .streamlit/secrets.toml
+          mkdir -p /home/app/.streamlit
+          cp .streamlit/secrets.toml /home/app/.streamlit/secrets.toml
           databricks sync . /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy-dev
           databricks apps deploy test-deploy-dev --source-code-path /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy-dev
 
