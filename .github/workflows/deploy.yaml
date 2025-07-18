@@ -48,7 +48,7 @@ jobs:
           RESOURCE_KEY: ${{ secrets.RESOURCE_KEY }}
         run: |
           databricks sync . /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy-dev
-          databricks apps deploy test-deploy-dev --source-code-path /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy-dev --resource-key $RESOURCE_KEY --env $ENV
+          databricks apps deploy test-deploy-dev --source-code-path /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy-dev
 
       - name: Update Deployment (Main)
         if: github.ref == 'refs/heads/main'
@@ -59,4 +59,4 @@ jobs:
           RESOURCE_KEY: ${{ secrets.RESOURCE_KEY }}
         run: |
           databricks sync . /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy
-          databricks apps deploy test-app --source-code-path /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy --resource-key $RESOURCE_KEY --env $ENV
+          databricks apps deploy test-app --source-code-path /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy
