@@ -7,8 +7,8 @@ st.set_page_config(page_title="🚀 My Awesome App", page_icon="🔥", layout="c
 # Title and subtitle
 st.title("🚀 Welcome to My Awesome Streamlit App!")
 st.subheader("Your journey into interactive web apps starts here 🎉")
-st.subheader("This is branch:")
-st.badge("Main", color="green")
+st.write("This is branch:")
+st.write("Dev")
 
 # Cool intro text
 st.markdown(
