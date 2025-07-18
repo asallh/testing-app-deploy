@@ -62,6 +62,7 @@ pluginbase==1.0.1
 prompt-toolkit==3.0.38
 protobuf==5.29.5
 psutil==5.9.4
+psycopg2-binary==2.9.10
 ptyprocess==0.7.0
 pure-eval==0.2.2
 pyarrow==20.0.0

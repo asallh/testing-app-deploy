@@ -1,8 +1,13 @@
+import os
 import streamlit as st
 import time
 
+from components.dataframe import DataViewer
+
 # Set page config
 st.set_page_config(page_title="🚀 My Awesome App", page_icon="🔥", layout="centered")
+
+db_viwer = DataViewer()
 
 # Title and subtitle
 st.title("🚀 Welcome to My Awesome Streamlit App!")
@@ -19,6 +24,8 @@ st.markdown(
     """
 )
 
+db_viwer.view_data()
+
 # Button to trigger action
 if st.button("✨ Launch Magic!"):
     st.success("Magic launched! Loading something cool...")
@@ -30,6 +37,9 @@ if st.button("✨ Launch Magic!"):
     
     st.snow()
     st.markdown("### 🎯 You're all set! Let's build something amazing.")
+
+
+
 
 # Footer
 st.markdown("---")
