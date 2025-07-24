@@ -61,9 +61,10 @@ class Constants:
         env = cls.get_environment()
         if env:
             credentials = {
+                "host":os.getenv("PGHOST"),
                 "dbname":os.getenv("PGDATABASE"),
                 "user":os.getenv("PGUSER"),
-                "host":os.getenv("PGHOST"),
+                "password":os.getenv("PGPASSWORD"),
                 "port":os.getenv("PGPORT"),
                 "sslmode":os.getenv("PGSSLMODE"),
                 "application_name":os.getenv("PGAPPNAME")
