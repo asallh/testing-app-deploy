@@ -8,40 +8,72 @@ class MissingEnvironmentVariables(EnvironmentError):
         self.message = f"Required environment variable {env_var_name} not set"
         super().__init__(self.message)
 
-def _get_secrets_credentials():
-    try:
-        creds = {
-            "host": st.secrets["PGHOST"],
-            "dbname": st.secrets["PGDATABASE"],
-            "user": st.secrets["PGUSER"],
-            "password": st.secrets["PGPASSWORD"],
-        }
-        return creds
-    except Exception:
-        return None
-
-def _get_env_credentials():
-    return {
-        "host": os.environ.get("PGHOST"),
-        "dbname": os.environ.get("PGDATABASE"),
-        "user": os.environ.get("PGUSER"),
-        "password": os.environ.get("PGPASSWORD"),
-        "port": os.environ.get("PGPORT", 5432),
-        "sslmode": os.environ.get("PGSSLMODE", "prefer"),
-        "application_name": os.environ.get("PGAPPNAME", "streamlit-app"),
-    }
-
-def _validate_credentials(credentials):
-    required_keys = ["host", "dbname", "user", "password"]
-    for key in required_keys:
-        if not credentials.get(key):
-            raise MissingEnvironmentVariables(key)
-
 
 class Constants:
 
     @classmethod
+    def get_environment(cls):
+        environment = os.getenv("ENVIRONMENT")
+        return environment
+
+    @classmethod
+    def get_lakebase_host(cls):
+        env = cls.get_environment()
+        if env:
+            return os.getenv("PGHOST")
+        else:
+            return st.secrets["PGHOST"]
+
+    @classmethod
+    def get_lakebase_port(cls):
+        env = cls.get_environment()
+        if env:
+            return os.getenv("PGPORT")
+        else:
+            return st.secrets["PGPORT"]
+
+    @classmethod
+    def get_lakebase_username(cls):
+        env = cls.get_environment()
+        if env:
+            return os.getenv("PGUSER")
+        else:
+            return st.secrets["PGUSER"]
+
+    @classmethod
+    def get_lakebase_database(cls):
+        env = cls.get_environment()
+        if env:
+            return os.getenv("PGDATABASE")
+        else:
+            return st.secrets["PGDATABASE"]
+
+    @classmethod
+    def get_lakebase_password(cls):
+        env = cls.get_environment()
+        if env:
+            return os.getenv("PGPASSWORD")
+        else:
+            return st.secrets["PGPASSWORD"]
+
+    @classmethod
     def get_database_credentials(cls):
-        credentials = _get_secrets_credentials() or _get_env_credentials()
-        _validate_credentials(credentials)
+        env = cls.get_environment()
+        if not (env):
+            credentials = {
+                "host": cls.get_lakebase_host(),
+                "dbname": cls.get_lakebase_database(),
+                "user": cls.get_lakebase_username(),
+                "password": cls.get_lakebase_password(),
+            }
+        else: 
+            credentials = {
+                "dbname":os.getenv("PGDATABASE"),
+                "user":os.getenv("PGUSER"),
+                "host":os.getenv("PGHOST"),
+                "port":os.getenv("PGPORT"),
+                "sslmode":os.getenv("PGSSLMODE"),
+                "application_name":os.getenv("PGAPPNAME")
+            }
+
         return psycopg2.connect(**credentials)

@@ -46,8 +46,6 @@ jobs:
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
           ENV: DEV
         run: |
-          mkdir -p .streamlit
-          touch .streamlit/secrets.toml
           databricks sync . /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy-dev
           databricks apps deploy dev-deployment --source-code-path /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy-dev
 
