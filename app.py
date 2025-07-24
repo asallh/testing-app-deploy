@@ -1,6 +1,4 @@
-import os
 import streamlit as st
-import time
 
 from components.dataframe import DataViewer
 
