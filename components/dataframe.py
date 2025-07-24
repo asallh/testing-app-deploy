@@ -11,12 +11,10 @@ class DataViewer:
     def __init__(self):
         # self.conn = Constants.get_database_credentials()
         self.conn = psycopg2.connect(
+            host=os.getenv("PGHOST"),
             dbname=os.getenv("PGDATABASE"),
             user=os.getenv("PGUSER"),
-            host=os.getenv("PGHOST"),
-            port=os.getenv("PGPORT"),
             sslmode=os.getenv("PGSSLMODE"),
-            application_name=os.getenv("PGAPPNAME")
         )
         
 
