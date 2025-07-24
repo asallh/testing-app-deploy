@@ -45,11 +45,9 @@ jobs:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
           ENV: DEV
-          database: ${{ secrets.RESOURCE_KEY }}  # 👈 inject the resource key here
         run: |
           databricks sync . /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy-dev
-          databricks apps deploy test-deploy-dev \
-            --source-code-path /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy-dev
+          databricks apps deploy dev-deployment --source-code-path /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy-dev
 
       - name: Update Deployment (Main)
         if: github.ref == 'refs/heads/main'
@@ -57,8 +55,6 @@ jobs:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
           ENV: PROD
-          database: ${{ secrets.RESOURCE_KEY }}  # 👈 inject the resource key here
         run: |
           databricks sync . /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy
-          databricks apps deploy test-app \
-            --source-code-path /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy
+          databricks apps deploy lakebase-tester-app --source-code-path /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy
