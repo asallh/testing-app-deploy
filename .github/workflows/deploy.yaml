@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - dev
 
 jobs:
   deploy:
@@ -38,10 +39,22 @@ jobs:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
 
-      - name: Update Deployment
+      - name: Update Deployment (Dev)
+        if: github.ref == 'refs/heads/dev'
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          ENV: DEV
         run: |
-            databricks sync . /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy
-            databricks apps deploy test-app --source-code-path /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy
+          databricks sync . /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy-dev
+          databricks apps deploy dev-deployment --source-code-path /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy-dev
+
+      - name: Update Deployment (Main)
+        if: github.ref == 'refs/heads/main'
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          ENV: PROD
+        run: |
+          databricks sync . /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy
+          databricks apps deploy lakebase-tester-app --source-code-path /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy

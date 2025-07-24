@@ -1,1 +1,4 @@
 .venv/
+.streamlit/
+azure-pipelines.yaml
+**/__pycache__/
