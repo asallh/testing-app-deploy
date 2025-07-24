@@ -65,9 +65,6 @@ class Constants:
                 "dbname":os.getenv("PGDATABASE"),
                 "user":os.getenv("PGUSER"),
                 "password":os.getenv("PGPASSWORD"),
-                "port":os.getenv("PGPORT"),
-                "sslmode":os.getenv("PGSSLMODE"),
-                "application_name":os.getenv("PGAPPNAME")
             }
         else: 
             credentials = {
