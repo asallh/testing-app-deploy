@@ -13,7 +13,7 @@ db_viwer = DataViewer()
 st.title("🚀 Welcome to My Awesome Streamlit App!")
 st.subheader("Your journey into interactive web apps starts here 🎉")
 st.write("This is branch:")
-st.write("Dev")
+st.code("Dev")
 
 # Cool intro text
 st.markdown(

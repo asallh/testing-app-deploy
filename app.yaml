@@ -1,4 +1,1 @@
 command: ['streamlit', 'run', 'app.py']
-env:
-  - name: "database"
-    value: "database"
