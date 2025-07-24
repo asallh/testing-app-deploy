@@ -59,14 +59,7 @@ class Constants:
     @classmethod
     def get_database_credentials(cls):
         env = cls.get_environment()
-        if not (env):
-            credentials = {
-                "host": cls.get_lakebase_host(),
-                "dbname": cls.get_lakebase_database(),
-                "user": cls.get_lakebase_username(),
-                "password": cls.get_lakebase_password(),
-            }
-        else: 
+        if env:
             credentials = {
                 "dbname":os.getenv("PGDATABASE"),
                 "user":os.getenv("PGUSER"),
@@ -74,6 +67,13 @@ class Constants:
                 "port":os.getenv("PGPORT"),
                 "sslmode":os.getenv("PGSSLMODE"),
                 "application_name":os.getenv("PGAPPNAME")
+            }
+        else: 
+            credentials = {
+                "host": cls.get_lakebase_host(),
+                "dbname": cls.get_lakebase_database(),
+                "user": cls.get_lakebase_username(),
+                "password": cls.get_lakebase_password(),
             }
 
         return psycopg2.connect(**credentials)
