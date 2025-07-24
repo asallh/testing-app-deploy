@@ -10,14 +10,15 @@ class DataViewer:
 
     def __init__(self):
         # self.conn = Constants.get_database_credentials()
-        self.conn = {
-            "dbname": os.getenv("PGDATABASE"),
-            "user": os.getenv("PGUSER"),
-            "host": os.getenv("PGHOST"),
-            "port": os.getenv("PGPORT"),
-            "sslmode": os.getenv("PGSSLMODE"),
-            "application_name": os.getenv("PGAPPNAME"),
-        }
+        self.conn = psycopg2.connect(
+            dbname=os.getenv("PGDATABASE"),
+            user=os.getenv("PGUSER"),
+            host=os.getenv("PGHOST"),
+            port=os.getenv("PGPORT"),
+            sslmode=os.getenv("PGSSLMODE"),
+            application_name=os.getenv("PGAPPNAME")
+        )
+        
 
     def fetch_data(self, query):
         return pd.read_sql_query(query, self.conn)
