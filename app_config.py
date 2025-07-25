@@ -1,6 +1,9 @@
+import time
 import streamlit as st
 import os
 import psycopg2
+from databricks.sdk.core import Config
+from databricks import sdk
 
 
 class MissingEnvironmentVariables(EnvironmentError):
@@ -9,51 +12,6 @@ class MissingEnvironmentVariables(EnvironmentError):
         super().__init__(self.message)
 
 class Constants:
-    # --- Databricks OAuth token for Lakebase (psycopg2) ---
-    _lakebase_password = None
-    _last_password_refresh = 0
-    _workspace_client = None
-
-    @classmethod
-    def _get_workspace_client(cls):
-        if cls._workspace_client is None:
-            try:
-                from databricks import sdk
-                from databricks.sdk.core import Config
-                app_config = Config()
-                cls._workspace_client = sdk.WorkspaceClient()
-                cls._lakebase_username = app_config.client_id
-            except Exception as e:
-                raise MissingEnvironmentVariables(f"Databricks SDK not configured: {e}")
-        return cls._workspace_client
-
-    @classmethod
-    def get_lakebase_token(cls):
-        import time
-        dbname = cls.get_lakebase_database()
-        if cls._lakebase_password is None or time.time() - cls._last_password_refresh > 900:
-            client = cls._get_workspace_client()
-            cred = client.database.generate_database_credential(instance_names=[dbname])
-            cls._lakebase_password = cred.token
-            cls._last_password_refresh = time.time()
-        return cls._lakebase_password
-
-    @classmethod
-    def get_lakebase_psycopg2_connection(cls):
-        """
-        Returns a psycopg2 connection to Lakebase using a fresh Databricks OAuth token as password.
-        """
-        import psycopg2
-        password = cls.get_lakebase_token()
-        conn = psycopg2.connect(
-            host=cls.get_lakebase_host(),
-            port=cls.get_lakebase_port(),
-            dbname=cls.get_lakebase_database(),
-            user=cls.get_lakebase_username(),
-            password=password,
-            sslmode="require"
-        )
-        return conn
 
     @classmethod
     def get_environment(cls):
@@ -96,11 +54,25 @@ class Constants:
     def get_lakebase_password(cls):
         env = cls.get_environment()
         if env:
-            return os.getenv("PGPASSWORD")
+            return cls.get_oauth_token()
         else:
             return st.secrets["PGPASSWORD"]
-
-
+        
+    @classmethod
+    def get_oauth_token(cls):
+        # Caches token and refreshes every 15 minutes
+        if not hasattr(cls, "_lakebase_password"):
+            cls._lakebase_password = None
+            cls._last_password_refresh = 0
+        if cls._lakebase_password is None or time.time() - cls._last_password_refresh > 900:
+            app_config = Config()
+            workspace_client = sdk.WorkspaceClient()
+            dbname = cls.get_lakebase_database()
+            cred = workspace_client.database.generate_database_credential(instance_names=[dbname])
+            cls._lakebase_password = cred.token
+            cls._last_password_refresh = time.time()
+        return cls._lakebase_password
+        
     @classmethod
     def get_database_credentials(cls):
         env = cls.get_environment()
@@ -109,6 +81,7 @@ class Constants:
                 "host":os.getenv("PGHOST"),
                 "dbname":os.getenv("PGDATABASE"),
                 "user":os.getenv("PGUSER"),
+                "password": cls.get_oauth_token(),
                 "port":os.getenv("PGPORT"),
                 "sslmode":os.getenv("PGSSLMODE"),
                 "application_name":os.getenv("PGAPPNAME"),
