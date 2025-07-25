@@ -68,7 +68,7 @@ class Constants:
             app_config = Config()
             workspace_client = sdk.WorkspaceClient()
             dbname = cls.get_lakebase_database()
-            cred = workspace_client.database.generate_database_credential(instance_names=[dbname])
+            cred = workspace_client.database.generate_database_credential(instance_names=[os.getenv("PGDATABASE")])
             cls._lakebase_password = cred.token
             cls._last_password_refresh = time.time()
         return cls._lakebase_password
