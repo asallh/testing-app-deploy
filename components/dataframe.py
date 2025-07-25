@@ -15,6 +15,6 @@ class DataViewer:
         return pd.read_sql_query(query, self.conn)
 
     def view_data(self):
-        query = "SELECT * FROM dogs"
+        query = "SELECT * FROM my_dogs.dogs"
         df = self.fetch_data(query)
         st.dataframe(df)
