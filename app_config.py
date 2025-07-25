@@ -38,7 +38,7 @@ class Constants:
                     cls._workspace_client = WorkspaceClient()
                 
                 if cls._database_instance_name is None:
-                    cls._database_instance_name = os.getenv("DATABASE_INSTANCE_NAME")
+                    cls._database_instance_name = os.getenv("PGDATABASE")
                 
                 logger.info("Generating fresh PostgreSQL OAuth token")
                 
