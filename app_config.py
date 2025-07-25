@@ -43,7 +43,6 @@ class Constants:
                         host=cls.get_lakebase_host(),
                         client_id=os.getenv("DATABRICKS_CLIENT_ID"),
                         client_secret="DATABRICKS_CLIENT_SECRET",
-                        auth_type="oauth-m2m",
                     )
 
                 if cls._database_instance_name is None:
