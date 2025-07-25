@@ -91,6 +91,7 @@ class Constants:
     def get_lakebase_password(cls):
         env = cls.get_environment()
         if env:
+            # For Databricks, refresh token if needed
             cls._refresh_token_if_needed()
             return cls._postgres_password or os.getenv("PGPASSWORD")
         else:
