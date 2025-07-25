@@ -38,14 +38,23 @@ class Constants:
 
             try:
                 if cls._workspace_client is None:
+                    # Fix: Get client_secret from environment variable, not hardcoded string
+                    client_id = os.getenv("DATABRICKS_CLIENT_ID")
+                    client_secret = os.getenv("DATABRICKS_CLIENT_SECRET")
+
+                    if not client_id or not client_secret:
+                        raise MissingEnvironmentVariables("DATABRICKS_CLIENT_ID or DATABRICKS_CLIENT_SECRET")
+
                     cls._workspace_client = WorkspaceClient(
                         host=cls.get_lakebase_host(),
-                        client_id=os.getenv("DATABRICKS_CLIENT_ID"),
-                        client_secret="DATABRICKS_CLIENT_SECRET",
+                        client_id=client_id,
+                        client_secret=client_secret,
                     )
 
                 if cls._database_instance_name is None:
                     cls._database_instance_name = os.getenv("PGDATABASE")
+                    if not cls._database_instance_name:
+                        raise MissingEnvironmentVariables("PGDATABASE")
 
                 logger.info("Generating fresh PostgreSQL OAuth token")
 
@@ -64,8 +73,16 @@ class Constants:
                 raise
 
     @classmethod
-    def get_database_token(workspace_client, database_name):
-        pg_password = workspace_client.da
+    def get_database_token(cls, workspace_client, database_name):
+        # Fix: Complete this method implementation
+        try:
+            cred = workspace_client.database.generate_database_credential(
+                instance_names=[database_name],
+            )
+            return cred.token
+        except Exception as e:
+            logger.error(f"Failed to get database token: {e}")
+            raise
 
     @classmethod
     def get_lakebase_host(cls):
