@@ -21,6 +21,7 @@ st.markdown(
 )
 
 db_viwer.view_data()
+st.write(os.getenv("PGUSER"))
 
 # Button to trigger action
 if st.button("✨ Launch Magic!"):
