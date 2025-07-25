@@ -28,7 +28,6 @@ class Constants:
 
     @classmethod
     def _refresh_token_if_needed(cls):
-        """Refresh token if it's older than 50 minutes"""
         current_time = time.time()
 
         if (
@@ -51,13 +50,14 @@ class Constants:
                 logger.info("Generating fresh PostgreSQL OAuth token")
 
                 cred = cls._workspace_client.database.generate_database_credential(
-                    request_id=str(uuid.uuid4()),
                     instance_names=[cls._database_instance_name],
                 )
 
                 cls._postgres_password = cred.token
                 cls._last_password_refresh = current_time
                 logger.info("Token updated successfully")
+
+                return cred
 
             except Exception as e:
                 logger.error(f"Token refresh failed: {e}")
