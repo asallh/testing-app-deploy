@@ -2,3 +2,7 @@ command: ['streamlit', 'run', 'app.py']
 env:
   - name: 'ENVIRONMENT'
     value: 'DEV'
+  - name: 'SCHEMA'
+    value: 'my_dogs'
+  - name: 'TABLE'
+    value: 'dogs'
