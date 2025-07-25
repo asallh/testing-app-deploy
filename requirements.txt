@@ -17,7 +17,7 @@ jsonschema-specifications==2025.4.1
 MarkupSafe==3.0.2
 mypy_extensions==1.1.0
 narwhals==1.47.1
-numpy==2.3.1
+numpy
 packaging==25.0
 pandas==2.3.1
 pathspec==0.12.1
