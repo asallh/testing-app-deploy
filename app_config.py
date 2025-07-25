@@ -121,7 +121,7 @@ class Constants:
         env = cls.get_environment()
         if env:
             cls._refresh_token_if_needed()
-            return cls._postgres_password or os.getenv("PGPASSWORD")
+            return cls._postgres_password
         else:
             return st.secrets["PGPASSWORD"]
 
