@@ -20,7 +20,6 @@ st.markdown(
     👉 Use the button below to get started!
     """
 )
-st.write(os.getenv("PGUSER"))
 
 db_viwer.view_data()
 
