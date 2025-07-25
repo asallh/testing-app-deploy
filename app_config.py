@@ -4,6 +4,7 @@ import os
 import psycopg2
 from databricks.sdk.core import Config
 from databricks import sdk
+import uuid
 
 
 class MissingEnvironmentVariables(EnvironmentError):
@@ -68,7 +69,11 @@ class Constants:
             app_config = Config()
             workspace_client = sdk.WorkspaceClient()
             dbname = cls.get_lakebase_database()
-            cred = workspace_client.database.generate_database_credential(instance_names=[os.getenv("PGDATABASE")])
+            request_id = str(uuid.uuid4())  # Generate a unique request ID
+            cred = workspace_client.database.generate_database_credential(
+                instance_names=[dbname],
+                request_id=request_id
+            )
             cls._lakebase_password = cred.token
             cls._last_password_refresh = time.time()
         return cls._lakebase_password
