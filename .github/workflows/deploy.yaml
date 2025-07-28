@@ -48,7 +48,7 @@ jobs:
           ENV: DEV
         run: |
           databricks sync . /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy-dev
-          databricks apps deploy dev-deployment --source-code-path /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy-dev --env key=$SOMEKEY
+          databricks apps deploy dev-deployment --source-code-path /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy-dev
 
       - name: Update Deployment (Main)
         if: github.ref == 'refs/heads/main'
