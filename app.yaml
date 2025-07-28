@@ -1,4 +1,4 @@
 command: ['streamlit', 'run', 'app.py']
-env:
-  - name: 'ENVIRONMENT'
-    value: 'DEV'
+# env:
+#   - name: 'ENVIRONMENT'
+#     value: 'DEV'
