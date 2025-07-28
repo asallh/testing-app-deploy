@@ -44,10 +44,11 @@ jobs:
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          SOMEKEY: ${{ secrets.SOMEKEY }}
           ENV: DEV
         run: |
           databricks sync . /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy-dev
-          databricks apps deploy dev-deployment --source-code-path /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy-dev
+          databricks apps deploy dev-deployment --source-code-path /Workspace/Users/ajaypalsallh@gmail.com/testing-app-deploy-dev --env key=$SOMEKEY
 
       - name: Update Deployment (Main)
         if: github.ref == 'refs/heads/main'

@@ -13,7 +13,7 @@ class MissingEnvironmentVariables(EnvironmentError):
         super().__init__(self.message)
 
 class Constants:
-
+    
     @classmethod
     def get_environment(cls):
         environment = os.getenv("ENVIRONMENT")
@@ -24,8 +24,7 @@ class Constants:
         env = cls.get_environment()
         if env:
             return os.getenv("PGHOST")
-        else:
-            return st.secrets["PGHOST"]
+        return st.secrets["PGHOST"]
 
     @classmethod
     def get_lakebase_port(cls):
