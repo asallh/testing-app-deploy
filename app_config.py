@@ -6,6 +6,8 @@ from databricks.sdk.core import Config
 from databricks import sdk
 import uuid
 
+SECRETS_FILE_PATH = os.path.join(os.path.dirname(__file__), ".streamlit", "secrets.toml")
+USE_SECRETS_FILE = os.path.exists(SECRETS_FILE_PATH)
 
 class MissingEnvironmentVariables(EnvironmentError):
     def __init__(self, env_var_name):
@@ -13,51 +15,56 @@ class MissingEnvironmentVariables(EnvironmentError):
         super().__init__(self.message)
 
 class Constants:
-    
+    ENV = "AJAY-DEV"
+    SECRETS = st.secrets.get(ENV, {}) if USE_SECRETS_FILE else {}
+
     @classmethod
     def get_environment(cls):
         environment = os.getenv("ENVIRONMENT")
+        if USE_SECRETS_FILE and cls.ENV not in st.secrets:
+            print(cls.ENV)
+            raise MissingEnvironmentVariables(
+                f"{cls.ENV} not found in secrets.toml"
+            )
         return environment
 
     @classmethod
+    def get_secrets(cls, env_var, required=True):
+        if USE_SECRETS_FILE:
+            env_var_value = cls.SECRETS.get(env_var)
+        else:
+            env_var_value = os.getenv(env_var)
+        if env_var_value is None and required is True:
+            raise MissingEnvironmentVariables(env_var)
+        return env_var_value
+
+    @classmethod
+    def get_hello_world(cls):
+        return cls.get_secrets("HelloWorld")
+
+    @classmethod
     def get_lakebase_host(cls):
-        env = cls.get_environment()
-        if env:
-            return os.getenv("PGHOST")
-        return st.secrets["PGHOST"]
+        return cls.get_secrets("PGHOST")
 
     @classmethod
     def get_lakebase_port(cls):
-        env = cls.get_environment()
-        if env:
-            return os.getenv("PGPORT")
-        else:
-            return st.secrets["PGPORT"]
+        return cls.get_secrets("PGPORT")
 
     @classmethod
     def get_lakebase_username(cls):
-        env = cls.get_environment()
-        if env:
-            return os.getenv("PGUSER")
-        else:
-            return st.secrets["PGUSER"]
+        return cls.get_secrets("PGUSER")
 
     @classmethod
     def get_lakebase_database(cls):
-        env = cls.get_environment()
-        if env:
-            return os.getenv("PGDATABASE")
-        else:
-            return st.secrets["PGDATABASE"]
+        return cls.get_secrets("PGDATABASE")
 
     @classmethod
     def get_lakebase_password(cls):
-        env = cls.get_environment()
-        if env:
-            return cls.get_oauth_token()
+        if USE_SECRETS_FILE:
+            return cls.get_secrets("PGPASSWORD")
         else:
-            return st.secrets["PGPASSWORD"]
-        
+            return cls.get_oauth_token()
+
     @classmethod
     def get_oauth_token(cls):
         # Caches token and refreshes every 15 minutes
@@ -76,26 +83,20 @@ class Constants:
             cls._lakebase_password = cred.token
             cls._last_password_refresh = time.time()
         return cls._lakebase_password
-        
+
     @classmethod
     def get_database_credentials(cls):
-        env = cls.get_environment()
-        if env:
-            credentials = {
-                "host":os.getenv("PGHOST"),
-                "dbname":os.getenv("PGDATABASE"),
-                "user":os.getenv("PGUSER"),
-                "password": cls.get_oauth_token(),
-                "port":os.getenv("PGPORT"),
-                "sslmode":os.getenv("PGSSLMODE"),
-                "application_name":os.getenv("PGAPPNAME"),
-            }
-        else: 
-            credentials = {
-                "host": cls.get_lakebase_host(),
-                "dbname": cls.get_lakebase_database(),
-                "user": cls.get_lakebase_username(),
-                "password": cls.get_lakebase_password(),
-            }
-
+        credentials = {
+            "host": cls.get_lakebase_host(),
+            "dbname": cls.get_lakebase_database(),
+            "user": cls.get_lakebase_username(),
+            "password": cls.get_lakebase_password(),
+        }
+        if not USE_SECRETS_FILE:
+            credentials["port"] = os.getenv("PGPORT")
+            credentials["sslmode"] = os.getenv("PGSSLMODE")
+            credentials["application_name"] = os.getenv("PGAPPNAME")
         return psycopg2.connect(**credentials)
+
+if __name__ == "__main__":
+    print(Constants.get_hello_world())
